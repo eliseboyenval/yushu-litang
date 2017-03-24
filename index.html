@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8' />
+    <title>Tous azimuts</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.33.1/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.33.1/mapbox-gl.css' rel='stylesheet' />
+    <style>
+        body { margin:0; padding:0; }
+        #map { position:absolute; top:0; bottom:0; width:100%; }
+    .mapboxgl-popup { max-width: 300px; font: 12px/20px 'Raleway', Oswald, Raleway, sans-serif;}
+h1 { color: #111; font-family: 'Raleway',sans-serif; font-size: 62px; font-weight: 800; line-height: 72px; margin: 0 0 24px; text-align: center; text-transform: uppercase; }
+h3 { color: #666; font-family: 'Oswald',sans-serif; font-size: 14px; font-weight: 500; margin: 10 0 24px;  }
+p { color: #7D818E; font-family: 'Raleway',sans-serif; font-size: 12px; font-weight: 500;  }
+a { color: #c8c8c8; text-decoration: none; text-align:center; }
+      
+         .bouton {
+    background-color: rgba(0,0,0,0);
+    color: #e26563;
+    font-size: 13px;
+    border-color: #e26563;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 0;
+    font-family: "Raleway",sans-serif,"google";
+    text-align:center;
+display : block;
+    padding: 5px 10px;
+}
+a:hover { color: #fff; background-color: #e26563;text-decoration: none; }
+    </style>
+  </head>
+  
+  <body>
+    <div id='map'></div>
+    <script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoiZWxpc2Vib3llbnZhbCIsImEiOiJjaWxkZWFxeHYwMDA5dmttNGMyZnJwbGVvIn0.ZsOmmBBePhO1bvYM9AAN_Q'; // replace this with your access token
+    var map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/eliseboyenval/cizqo1m7l00k02rpd1dok8iww', // replace this with your style
+  center: [98.48, 31.67], // starting position
+    zoom: 5 // starting zoom
+    });
+map.on('click', function(e) {
+  var features = map.queryRenderedFeatures(e.point, {
+    layers: ['Hotel','Camping','Hebergement','Articles','Hotel-France','Camping-France','Hebergement-France'] // replace this with the name of the layer
+  });
+  if (!features.length) {
+    return;
+  }
+  var feature = features[0];
+  
+  var popupOffsets = {
+ 'top': [0, 0],
+ 'top-left': [0,0],
+ 'top-right': [0,0],
+ 'bottom': [0, -40],
+ 'bottom-left': [0,-40],
+ 'bottom-right': [0,-40],
+ 'left': [20,-20],
+ 'right': [-20,-20]
+ };
+    // Populate the popup and set its coordinates
+    // based on the feature found.
+  var popup = new mapboxgl.Popup({ offset: popupOffsets })
+    .setLngLat(feature.geometry.coordinates)
+    .setHTML('<h3>' + feature.properties.title + '</h3><p>' + feature.properties.description + '</p>')
+    .setLngLat(feature.geometry.coordinates)
+    .addTo(map);
+});
+      
+      // Use the same approach as above to indicate that the symbols are clickable
+// by changing the cursor style to 'pointer'.
+map.on('mousemove', function (e) {
+    var features = map.queryRenderedFeatures(e.point, { layers: ['Hotel','Camping','Hebergement','Articles','Hotel-France','Camping-France','Hebergement-France'] });
+    map.getCanvas().style.cursor = (features.length) ? 'pointer' : '';
+});
+// Add zoom and rotation controls to the map.
+map.addControl(new mapboxgl.NavigationControl());
+// Add full screen button
+//map.addControl(new mapboxgl.FullscreenControl(),'top-left');
+    </script>
+  </body>
+</html>
